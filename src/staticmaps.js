@@ -40,6 +40,7 @@ class StaticMaps {
     this.tileRequestHeader = this.options.tileRequestHeader;
     this.reverseY = this.options.reverseY || false;
     this.maxZoom = this.options.maxZoom;
+    this.stepsPerZoomLevel = this.options.stepsPerZoomLevel || 1;
 
     // # features
     this.markers = [];
@@ -162,7 +163,8 @@ class StaticMaps {
     * calculate the best zoom level for given extent
     */
   calculateZoom() {
-    for (let z = 17; z > 0; z--) {
+    for (let zStep = 17 * this.stepsPerZoomLevel; zStep > 0; zStep--) {
+      const z = zStep / this.stepsPerZoomLevel;
       const extent = this.determineExtent(z);
       const width = (lonToX(extent[2], z) - lonToX(extent[0], z)) * this.tileSize;
       if (width > (this.width - (this.padding[0] * 2))) continue;
